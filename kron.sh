@@ -23,7 +23,8 @@ Kron-mmits
 function list() 
 {
     if [ $(git rev-list --count HEAD) ]; then 
-        git log # TODO: list commits an desc ordered list
+        logs=$(git log --pretty="%H%n%an%n%ai%n___%n%n%n") # TODO: list commits an desc ordered list
+        echo -n "$logs" > log.txt
     else
         echo "No unpushed commits to see here..."
     fi
