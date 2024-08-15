@@ -3,11 +3,10 @@
 # Initialize kron
 
 # Basic usage
-function help()
-{
+function help() {
    cat << Kron-mmits
-   
-   Reange your commit history as you desire and your GitHub graph too :>
+   :: Kron is a basic git cli wrapper for modifying git history ::
+   Rearrange your commit history as you desire and your GitHub graph too :>
    
    Usage: kron [--action] [--args]
 
@@ -24,10 +23,10 @@ Kron-mmits
 commits=$(git rev-list --count HEAD) 
 
 # List all unpushed commits
-function list() 
-{
+function list() {
+    curr_branch=$(git name-rev --name-only HEAD)
     if [ $commits ]; then 
-        logs=$(git log --pretty="%H%n%an%n%ai%n___%n%n%n") # TODO: list commits as an desc ordered list
+        logs=$(git log origin/$curr_branch..HEAD --pretty="%H%n%an%n%ai%n___%n%n%n") # TODO: list commits as an desc ordered list
         echo -n "$logs" > log.txt
     else
         echo "No unpushed commits to see here..."
@@ -44,7 +43,6 @@ function modify_date() { #TODO: Add validation to parameters
         else
             echo "[Invalid date format] : You may follow the pattern YY-MM-DD HH:MM:SS"
         fi
-
     fi
 }
 
