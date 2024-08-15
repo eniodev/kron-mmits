@@ -57,5 +57,5 @@ if [ $(git rev-parse --is-inside-work-tree 2>/dev/null) ]; then
     esac
   done
 else
-  echo "[Invalied directory] : Kron is designed to work inside repositories only :)"
+  echo "[Invalid directory] : Kron is designed to work inside git repositories only :)"
 fi
