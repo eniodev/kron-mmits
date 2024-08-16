@@ -19,13 +19,13 @@ function help() {
 Kron-mmits
 }  
 
-# Count the number of commits
-commits=$(git rev-list --count HEAD) 
+# Count the number of unpushed commits
+curr_branch=$(git name-rev --name-only HEAD)
+local_commits=$(git rev-list --right-only --count origin/$curr_branch...$curr_branch) 
 
 # List all unpushed commits
 function list() {
-    curr_branch=$(git name-rev --name-only HEAD)
-    if [ $commits ]; then 
+    if [ $local_commits != 0 ]; then 
         logs=$(git log origin/$curr_branch..HEAD --pretty="%H%n%an%n%ai%n___%n%n%n") # TODO: list commits as an desc ordered list
         echo -n "$logs" > log.txt
     else
@@ -36,7 +36,8 @@ function list() {
 # Modify the date of the latest unpushed commit 
 function modify_date() { #TODO: Add validation to parameters
     if [ $commits ]; then
-        #TODO: Check whether its linux or bsd and validate accordingly (-d insted of -j -f)
+        # TODO: Check whether its linux or bsd and validate accordingly (-d insted of -j -f)
+        # Or just add an auto instal for gdate on bsd and set alias date=gdate 
         if [[ "$(date -j -f "%Y-%m-%d %H:%M:%S" "$1" +%s 2>/dev/null)" ]]; then
             export GIT_COMMITTER_DATE="$1"
             git commit --amend --no-edit --date="$1"
@@ -57,5 +58,5 @@ if [ $(git rev-parse --is-inside-work-tree 2>/dev/null) ]; then
     esac
   done
 else
-  echo "[Invalid directory] : Kron is designed to work inside git repositories only :)"
+  echo "[Invalied directory] : Kron is designed to work inside repositories only :)"
 fi
