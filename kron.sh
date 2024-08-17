@@ -14,6 +14,7 @@ function help() {
      [-h | --help]                                       show this help message and exit
      [-l | --list]                                       list all unpushed commits
      [-md | --modify-date] [YY-MM-DD HH:MM:SS]           modify the date of the latest unpushed commit
+     [-mm | --modify-message] [MESSAGE]                  modify the message of the latest unpushed commit
      [-p | --populate] [YY-MM-DD | MM | YY | (YY-MM)]    populate your git history with fake commits
 
 Kron-mmits
@@ -35,7 +36,7 @@ function list() {
 
 # Modify the date of the latest unpushed commit 
 function modify_date() { #TODO: Add validation to parameters
-    if [ $commits ]; then
+    if [ $local_commits != 0 ]; then
         # TODO: Check whether its linux or bsd and validate accordingly (-d insted of -j -f)
         # Or just add an auto instal for gdate on bsd and set alias date=gdate 
         if [[ "$(date -j -f "%Y-%m-%d %H:%M:%S" "$1" +%s 2>/dev/null)" ]]; then
@@ -47,6 +48,14 @@ function modify_date() { #TODO: Add validation to parameters
     fi
 }
 
+function modify_message() {
+    if [ $local_commits != 0 ]; then
+        git commit --amend -m "$1"
+    else
+        echo "[Error] : You don't have any commits yet"
+    fi
+}
+
 # Verify if the current dir is a git repo
 if [ $(git rev-parse --is-inside-work-tree 2>/dev/null) ]; then
   while [[ $# -gt 0 ]]; do
@@ -54,6 +63,7 @@ if [ $(git rev-parse --is-inside-work-tree 2>/dev/null) ]; then
         -h | --help ) help; exit; ;;
         -l | --list ) list; exit; ;;
         -md | --modify-date ) modify_date "$2"; exit; ;;
+        -mm | --modify-message ) modify_message "$2"; exit; ;;
         * ) echo "[Invalid argument] : use -h or --help for help"; break ;; 
     esac
   done
